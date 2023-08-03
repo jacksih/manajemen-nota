@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Transaksi extends Model
+class City extends Model
 {
     use HasFactory;
-    
-    protected $fillable = ['deskripsi', 'jumlah'];
 
-    public function nota()
+    protected $fillable = [
+        'name',
+    ];
+
+    public function districts()
     {
-        return $this->belongsTo(Nota::class);
+        return $this->hasMany(District::class);
     }
 }
