@@ -18,6 +18,8 @@ class ItemFactory extends Factory
     {
         return [
             //
+            'name'  =>  $this->faker->words(rand(1, 3), true),
+            'price' =>  rand(1, 100) * 10000
         ];
     }
 }

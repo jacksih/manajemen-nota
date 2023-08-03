@@ -14,8 +14,16 @@ class InvoiceController extends Controller
     public function index()
     {
         //
-        $invoices = Invoice::all();
-        return view('', compact('invoices'));
+        $invoices = Invoice::query()
+            ->with([
+                'items'
+            ])
+            ->withSum('items', 'item_invoice.amount') // Sum the 'amount' column in the 'items' relationship
+            ->selectRaw('(SELECT sum(item_invoice.amount * item_invoice.price) FROM items INNER JOIN item_invoice ON items.id = item_invoice.item_id WHERE invoices.id = item_invoice.invoice_id) AS items_sum_total_amount')
+            ->get();
+
+        // dd($invoices);
+        return view('invoice.index', compact('invoices'));
     }
 
     /**
@@ -34,7 +42,8 @@ class InvoiceController extends Controller
     {
         //
         $validated = $request->validated();
-        if (Invoice::create($validated)) {
+        if ($invoice = Invoice::create($validated)) {
+            $invoice->items()->sync($validated['items']);
             return back()->with(
                 [
                     'success'   =>  'New invoice created'
@@ -54,6 +63,10 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         //
+        $invoice->load('items');
+        foreach ($invoice->items as $item) {
+            $item->total_amount = $item->pivot->price * $item->pivot->amount;
+        }
         return view('', compact('invoice'));
     }
 
@@ -74,6 +87,7 @@ class InvoiceController extends Controller
         //
         $validated = $request->validated();
         if ($invoice->update($validated)) {
+            $invoice->sync($validated['items']);
             return back()->with(
                 [
                     'success'   =>  'The invoice updated'

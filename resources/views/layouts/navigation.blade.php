@@ -9,8 +9,7 @@
 
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-            data-accordion="false">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-item">
                 <a href="{{ route('home') }}" class="nav-link">
                     <i class="nav-icon fas fa-th"></i>
@@ -34,6 +33,16 @@
                     <i class="nav-icon far fa-address-card"></i>
                     <p>
                         {{ __('About us') }}
+                    </p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ route('invoice.index') }}"
+                    class="nav-link {{ request()->routeIs('invoice.index') ? 'active' : '' }} ">
+                    <i class="nav-icon far fa-address-card"></i>
+                    <p>
+                        {{ __('Invoices') }}
                     </p>
                 </a>
             </li>
